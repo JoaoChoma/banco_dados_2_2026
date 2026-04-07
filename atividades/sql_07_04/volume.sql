@@ -26,3 +26,14 @@ SELECT
     2018 + MOD(n, 8)
 FROM numeros
 WHERE n < 100000;
+
+INSERT INTO numeros (n)
+WITH RECURSIVE seq AS (
+    SELECT 0 AS n
+    UNION ALL
+    SELECT n + 1
+    FROM seq
+    WHERE n < 999999
+)
+SELECT n
+FROM seq;
