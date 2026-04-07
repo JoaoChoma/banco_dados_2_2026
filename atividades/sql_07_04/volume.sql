@@ -37,3 +37,9 @@ WITH RECURSIVE seq AS (
 )
 SELECT n
 FROM seq;
+
+DROP TABLE IF EXISTS numeros;
+
+CREATE TABLE numeros (
+    n INT NOT NULL PRIMARY KEY
+);
