@@ -1,5 +1,16 @@
+-- =========================================
+-- 1. LIMPEZA
+-- =========================================
+DROP TABLE IF EXISTS matricula;
+DROP TABLE IF EXISTS aluno;
+DROP TABLE IF EXISTS disciplina;
+DROP TABLE IF EXISTS numeros;
+
+-- =========================================
+-- 2. TABELAS
+-- =========================================
 CREATE TABLE aluno (
-    id INT PRIMARY KEY,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     curso VARCHAR(50) NOT NULL,
     cidade VARCHAR(50) NOT NULL,
@@ -7,16 +18,16 @@ CREATE TABLE aluno (
 );
 
 CREATE TABLE disciplina (
-    id INT PRIMARY KEY,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     departamento VARCHAR(50) NOT NULL,
     carga_horaria INT NOT NULL
 );
 
 CREATE TABLE matricula (
-    id INT PRIMARY KEY,
-    aluno_id INT NOT NULL,
-    disciplina_id INT NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    aluno_id BIGINT NOT NULL,
+    disciplina_id BIGINT NOT NULL,
     semestre VARCHAR(10) NOT NULL,
     nota DECIMAL(4,2),
     frequencia DECIMAL(5,2),
@@ -25,28 +36,153 @@ CREATE TABLE matricula (
     CONSTRAINT fk_matricula_disciplina FOREIGN KEY (disciplina_id) REFERENCES disciplina(id)
 );
 
+-- =========================================
+-- 3. TABELA AUXILIAR NUMEROS
+-- Gera valores de 0 até 999999
+-- =========================================
+DROP TABLE IF EXISTS numeros;
+CREATE TABLE numeros (
+    n INT NOT NULL PRIMARY KEY
+);
 
-INSERT INTO aluno (id, nome, curso, cidade, ano_ingresso) VALUES
-(1, 'Ana Silva', 'Computacao', 'Maringa', 2022),
-(2, 'Bruno Souza', 'Engenharia', 'Londrina', 2021),
-(3, 'Carla Lima', 'Computacao', 'Maringa', 2023),
-(4, 'Diego Alves', 'Direito', 'Curitiba', 2020),
-(5, 'Elisa Rocha', 'Computacao', 'Apucarana', 2022);
+DROP TABLE IF EXISTS digitos;
+CREATE TABLE digitos (
+    d INT NOT NULL PRIMARY KEY
+);
 
-INSERT INTO disciplina (id, nome, departamento, carga_horaria) VALUES
-(1, 'Banco de Dados', 'Computacao', 60),
-(2, 'Algoritmos', 'Computacao', 80),
-(3, 'Calculo I', 'Matematica', 80),
-(4, 'Direito Constitucional', 'Direito', 60);
+INSERT INTO digitos (d)
+VALUES (0),(1),(2),(3),(4),(5),(6),(7),(8),(9);
 
-INSERT INTO matricula (id, aluno_id, disciplina_id, semestre, nota, frequencia, situacao) VALUES
-(1, 1, 1, '2024-1', 8.50, 90.00, 'Aprovado'),
-(2, 1, 2, '2024-1', 7.80, 88.00, 'Aprovado'),
-(3, 2, 3, '2024-1', 6.00, 75.00, 'Aprovado'),
-(4, 3, 1, '2024-1', 9.20, 95.00, 'Aprovado'),
-(5, 3, 3, '2024-1', 5.00, 60.00, 'Reprovado'),
-(6, 4, 4, '2024-1', 8.00, 92.00, 'Aprovado'),
-(7, 5, 2, '2024-1', 6.50, 70.00, 'Aprovado');
+INSERT INTO numeros (n)
+SELECT
+      d0.d
+    + d1.d * 10
+    + d2.d * 100
+    + d3.d * 1000
+    + d4.d * 10000
+    + d5.d * 100000 AS n
+FROM digitos d0
+CROSS JOIN digitos d1
+CROSS JOIN digitos d2
+CROSS JOIN digitos d3
+CROSS JOIN digitos d4
+CROSS JOIN digitos d5
+ORDER BY n;
 
+DROP TABLE IF EXISTS digitos;
 
-select * from aluno;
+-- =========================================
+-- 4. POPULAR DISCIPLINAS (200)
+-- =========================================
+INSERT INTO disciplina (nome, departamento, carga_horaria)
+SELECT
+    CONCAT('Disciplina ', n + 1),
+    CASE
+        WHEN MOD(n, 5) = 0 THEN 'Computacao'
+        WHEN MOD(n, 5) = 1 THEN 'Engenharia'
+        WHEN MOD(n, 5) = 2 THEN 'Matematica'
+        WHEN MOD(n, 5) = 3 THEN 'Fisica'
+        ELSE 'Administracao'
+    END,
+    CASE
+        WHEN MOD(n, 3) = 0 THEN 40
+        WHEN MOD(n, 3) = 1 THEN 60
+        ELSE 80
+    END
+FROM numeros
+WHERE n < 200
+ORDER BY n;
+
+-- =========================================
+-- 5. POPULAR ALUNOS (100.000)
+-- =========================================
+INSERT INTO aluno (nome, curso, cidade, ano_ingresso)
+SELECT
+    CONCAT('Aluno ', n + 1),
+    CASE
+        WHEN MOD(n, 10) = 0 THEN 'Computacao'
+        WHEN MOD(n, 10) = 1 THEN 'Engenharia'
+        WHEN MOD(n, 10) = 2 THEN 'Administracao'
+        WHEN MOD(n, 10) = 3 THEN 'Direito'
+        WHEN MOD(n, 10) = 4 THEN 'Medicina'
+        WHEN MOD(n, 10) = 5 THEN 'Arquitetura'
+        WHEN MOD(n, 10) = 6 THEN 'Psicologia'
+        WHEN MOD(n, 10) = 7 THEN 'Economia'
+        WHEN MOD(n, 10) = 8 THEN 'Fisica'
+        ELSE 'Matematica'
+    END,
+    CASE
+        WHEN MOD(n, 8) = 0 THEN 'Maringa'
+        WHEN MOD(n, 8) = 1 THEN 'Curitiba'
+        WHEN MOD(n, 8) = 2 THEN 'Londrina'
+        WHEN MOD(n, 8) = 3 THEN 'Cascavel'
+        WHEN MOD(n, 8) = 4 THEN 'Ponta Grossa'
+        WHEN MOD(n, 8) = 5 THEN 'Foz do Iguacu'
+        WHEN MOD(n, 8) = 6 THEN 'Arapongas'
+        ELSE 'Apucarana'
+    END,
+    2018 + MOD(n, 8)
+FROM numeros
+WHERE n < 100000
+ORDER BY n;
+
+-- =========================================
+-- 6. POPULAR MATRICULAS (1.000.000)
+-- =========================================
+INSERT INTO matricula (aluno_id, disciplina_id, semestre, nota, frequencia, situacao)
+SELECT
+    MOD(n, 100000) + 1 AS aluno_id,
+    MOD(n, 200) + 1 AS disciplina_id,
+    CASE
+        WHEN MOD(n, 4) = 0 THEN '2024-1'
+        WHEN MOD(n, 4) = 1 THEN '2024-2'
+        WHEN MOD(n, 4) = 2 THEN '2025-1'
+        ELSE '2025-2'
+    END,
+    ROUND(RAND() * 10, 2) AS nota,
+    ROUND(50 + RAND() * 50, 2) AS frequencia,
+    CASE
+        WHEN MOD(n, 10) = 0 THEN 'Reprovado'
+        WHEN MOD(n, 10) = 1 THEN 'Trancado'
+        ELSE 'Aprovado'
+    END
+FROM numeros
+WHERE n < 1000000
+ORDER BY n;
+
+-- =========================================
+-- 7. INDICES IMPORTANTES
+-- =========================================
+CREATE INDEX idx_aluno_curso ON aluno(curso);
+CREATE INDEX idx_aluno_cidade ON aluno(cidade);
+CREATE INDEX idx_matricula_aluno_id ON matricula(aluno_id);
+CREATE INDEX idx_matricula_disciplina_id ON matricula(disciplina_id);
+CREATE INDEX idx_matricula_situacao ON matricula(situacao);
+
+-- =========================================
+-- 8. ATUALIZAR ESTATISTICAS
+-- =========================================
+ANALYZE TABLE aluno, disciplina, matricula, numeros;
+
+-- =========================================
+-- 9. CONFERENCIA
+-- =========================================
+SELECT COUNT(*) AS total_numeros FROM numeros;
+SELECT COUNT(*) AS total_disciplinas FROM disciplina;
+SELECT COUNT(*) AS total_alunos FROM aluno;
+SELECT COUNT(*) AS total_matriculas FROM matricula;
+
+EXPLAIN ANALYZE
+SELECT * FROM aluno;
+
+EXPLAIN ANALYZE
+SELECT a.id, a.nome, m.disciplina_id, m.situacao
+FROM aluno a
+JOIN matricula m ON a.id = m.aluno_id
+WHERE a.curso = 'Computacao'
+  AND m.situacao = 'Aprovado';
+
+explain analyze
+SELECT *
+FROM aluno
+WHERE nome LIKE '%10';
