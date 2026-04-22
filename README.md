@@ -12,8 +12,6 @@ Repositório oficial para organização e acompanhamento da disciplina **Banco d
 
 ## Estrutura do repositório
 
-> Ajuste os nomes/estruturas conforme a evolução do semestre.
-
 - `aulas/` — slides, roteiros e materiais de apoio
 - `atividades/` — enunciados, rubricas e exemplos
 - `assets/` — imagens e recursos visuais (ex.: banner do README)
@@ -38,3 +36,15 @@ Repositório oficial para organização e acompanhamento da disciplina **Banco d
 - "Quem não faz nada não erra, e quem não erra é promovido." by Outro alguem (1900)
 - “Quem não mexe no código vive em paz com o bug.” by Beutrano (1900)
 - “Quem decide no achismo nunca perde tempo com dados.” by Ciclano (1900)
+
+
+## Organização esperada de temas
+
+- armazenamento e recuperação de dados;
+- processamento e otimização de consultas;
+- processamento de transações;
+- tratamento de concorrência de transações;
+- indexação;
+- recuperação de falhas;
+- banco de dados distribuído;
+- banco de dados NoSql;
