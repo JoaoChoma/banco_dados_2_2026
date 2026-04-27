@@ -14,6 +14,37 @@
             "database": "meubanco",
             "username": "appuser",
             "password": "app123"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "127.0.0.1",
+            "port": 3306,
+            "driver": "MySQL",
+            "group": "MySql Docker",
+            "database": "meubanco",
+            "username": "appuser",
+            "password": "app123",
+            "name": "Conexao2"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "127.0.0.1",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "mymy",
+            "username": "appuser",
+            "password": "app123",
+            "database": "meubanco"
         }
     ]
 }

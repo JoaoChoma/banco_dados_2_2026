@@ -1,0 +1,5 @@
+START TRANSACTION;
+SELECT * FROM contas
+WHERE id = 1
+FOR UPDATE;
+commit;
